@@ -51,6 +51,10 @@ const TimerTodo = () => {
     }, [startTime, EndTime, setMin])
 
 
+    // const updateTask = (id, updatedTask) => {
+    //     setTask((prev) => (
+    //         prev.map((task, i) => (i === id ? updatedTask : task))))
+    // }
 
 
     // const paddedHours = hours.toString().padStart(2, "0");
@@ -64,40 +68,50 @@ const TimerTodo = () => {
     }, [startTime, EndTime, Task])
 
     const Addlist = () => {
-        if (!edit) {
-            if (min > 0) {
-                setListData([...listData, taskData])
-                setTask("")
-            } else {
-                alert("End Time should be greater thsn start time")
-            }
-        } else {
-            handleupdate(Task, edit.id)
-            setTask("")
+
+        if (taskData.task.trim() !== "") {
+            setListData((prev) => [...prev, taskData])
+            setTaskData({})
         }
+
+        // if (!edit) {
+        //     if (min > 0) {
+        //         setListData([...listData, taskData])
+        //         setTask("")
+        //     } else {
+        //         alert("End Time should be greater thsn start time")
+        //     }
+        // } else {
+        //     handleupdate(Task, edit.id)
+        //     setTask("")
+        // }
     }
 
-    const handleEdit = (id) => {
-        const findTodo = listData.find((todo) => todo.id === id)
-        setEdit(findTodo)
-    }
-
-    const handleupdate = (task, id) => {
-        const newData = listData.map((items, i) => (
-            items.id === id ? (task, id) : items
-        ))
-        setListData(newData)
-        setEdit("")
+    const handleEdit = (id, Task) => {
+        setListData((prev) => (
+            prev.map((task, i) => (i === id ? Task : task))))
 
     }
 
-    useEffect(() => {
-        if (edit) {
-            setTask(edit.Task)
-        } else {
-            setTask("")
-        }
-    }, [setTask, edit])
+    // const handleupdate = (task, id) => {
+        // const newData = listData.map((items, i) => (
+        //     items.id === id ? (task, id) : items
+        // ))
+        // setListData(newData)
+        // setEdit("")
+    //     setTask((prev) => (
+    //         prev.map((task, i) => (i === prev.id ? task.task : task))))
+
+
+    // }
+
+    // useEffect(() => {
+    //     if (edit) {
+    //         setTask(edit.Task)
+    //     } else {
+    //         setTask("")
+    //     }
+    // }, [setTask, edit])
 
     const DeleteData = (id) => {
         setListData((prev) => prev.filter((items) => (items.id !== id)))
@@ -154,12 +168,14 @@ const TimerTodo = () => {
                             <td>{items.minutes}</td>
                             <td>{items.task}</td>
                             <td>
-                                {edit === items.id ? (
+                                {/* {edit === items.id ? (
                                     <button onClick={() => { handleupdate(items.task, items.id) }}>save</button>)
                                     :
                                     (<button onClick={() => { handleEdit(items.id) }}>Edit</button>)
 
-                                }
+                                } */}
+                                <button onClick={() => { handleEdit(items.id, prompt('Enter updated task:', items.task)) }}>Edit</button>
+
                                 <button onClick={() => DeleteData(items.id)}>Delete</button>
                             </td>
                         </tr>
