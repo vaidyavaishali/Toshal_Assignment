@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react"
 import "./timerTodo.css"
 const TimerTodo = () => {
-    const [taskData, setTaskData] = useState({ starttime: "", Endtime: "", task: "", id: "" })
+    const [taskData, setTaskData] = useState({ starttime: "", Endtime: "", minutes: "", task: "", id: "" })
     const [startTime, setStartTime] = useState("")
     const [EndTime, setEndTime] = useState("")
+    const [min, setMin] = useState("")
     const [Task, setTask] = useState("")
     const [listData, setListData] = useState([])
     const [edit, setEdit] = useState(null)
     const [updateTask, setupdate] = useState({ starttime: "", Endtime: "", task: "" })
-    const [timeStr, period] = startTime.split(" ");
-    const [hoursStr, minutesStr] = startTime.split(":");
 
     // const [endtimeStr, endperiod] = EndTime.split(" ");
     // const [endhoursStr, endminutesStr] = EndTime.split(":");
@@ -23,33 +22,59 @@ const TimerTodo = () => {
     // const endpaddedHours = hours.toString().padStart(2, "0");
     // const endpaddedMinutes = endminutesStr.padStart(2, "0");
 
+    useEffect(() => {
+        const [starttimeStr, startperiod] = startTime.split(" ");
+        const [starthoursStr, startminutesStr] = starttimeStr.split(":");
+        let starthours = parseInt(starthoursStr);
+        let startmins = parseInt(startminutesStr);
+        if (startperiod === "PM" && starthours < 12) {
+            starthours += 12;
+        } else if (startperiod === "AM" && starthours === 12) {
+            starthours = 0;
+        }
+        startmins = starthours * 60 + startmins
+
+        const [endtimeStr, endperiod] = EndTime.split(" ");
+        const [endhoursStr, endminutesStr] = endtimeStr.split(":");
+        let endhours = parseInt(endhoursStr);
+        let endmins = parseInt(endminutesStr);
+        if (endperiod === "PM" && endhours < 12) {
+            endhours += 12;
+        } else if (endperiod === "AM" && endhours === 12) {
+            endhours = 0;
+        }
+        endmins = endhours * 60 + endmins
+        // if (endmins > startmins) {
+        let diff = endmins - startmins
+        // }
+        setMin(diff.toString())
+    }, [startTime, EndTime, setMin])
 
 
-    let hours = parseInt(hoursStr);
-    if (period === "PM" && hours < 12) {
-        hours += 12;
-    } else if (period === "AM" && hours === 12) {
-        hours = 0;
-    }
-    const paddedHours = hours.toString().padStart(2, "0");
-    const paddedMinutes = minutesStr.padStart(2, "0");
-    const Starttime24hr = `${paddedHours}:${paddedMinutes}`;
+
+
+    // const paddedHours = hours.toString().padStart(2, "0");
+    // const paddedMinutes =startminutesStr.padStart(2, "0");
+    // const Starttime24hr = `${paddedHours}:${paddedMinutes}`;
 
 
     useEffect(() => {
         // setId((id)=>(id+1))
-        setTaskData({ starttime: startTime, Endtime: EndTime, task: Task, id: Date.now() * Math.random(10) })
+        setTaskData({ starttime: startTime, Endtime: EndTime, minutes: min, task: Task, id: Date.now() * Math.random(10) })
     }, [startTime, EndTime, Task])
 
     const Addlist = () => {
         if (!edit) {
-            setListData([...listData, taskData])
-            setTask("")
+            if (min > 0) {
+                setListData([...listData, taskData])
+                setTask("")
+            } else {
+                alert("End Time should be greater thsn start time")
+            }
         } else {
             handleupdate(Task, edit.id)
             setTask("")
         }
-
     }
 
     const handleEdit = (id) => {
@@ -126,7 +151,7 @@ const TimerTodo = () => {
                         <tr key={i}>
                             <td>{items.starttime}</td>
                             <td>{items.Endtime}</td>
-                            <td>Minutes</td>
+                            <td>{items.minutes}</td>
                             <td>{items.task}</td>
                             <td>
                                 {edit === items.id ? (
