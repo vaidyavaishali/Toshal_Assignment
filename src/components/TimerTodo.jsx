@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react"
 import "./timerTodo.css"
 const TimerTodo = () => {
+  
     const [taskData, setTaskData] = useState({ starttime: "", Endtime: "", minutes: "", task: "", id: Date.now() * Math.random(10) })
-    const [currDate, setCurrDate] = useState("")
+    // const [Task, setTask] = useState("")
     const [listData, setListData] = useState([])
-
+    const [editId, setEditId] = useState(null);
     const currentDate = new Date();
     const defaultDate = currentDate.toISOString().split("T")[0];
+
 
     useEffect(() => {
         const [starttimeStr, startperiod] = taskData.starttime.split(" ");
@@ -30,15 +32,26 @@ const TimerTodo = () => {
             endhours = 0;
         }
         endmins = endhours * 60 + endmins
-        let diff = endmins - startmins
+        if (endmins > startmins) {
+            let diff = endmins - startmins
+            setTaskData((prevData) => ({ ...prevData, minutes: diff }));
+        }
+        // } else {
+        //     alert("End Time should be greater")
+        // }
 
-        setTaskData({ ...taskData, minutes: diff })
-    }, [taskData, setTaskData])
+    }, [taskData.starttime, taskData.Endtime])
 
     const Addlist = () => {
-        if (validate(taskData) === true) {
+
+        if (taskData.Endtime !== "" && taskData.starttime !== "" && taskData.task !== "") {
+            setTaskData({ ...taskData, id: Date.now() * Math.random(10) })
             setListData((prev) => [...prev, taskData])
+            // taskData.starttime =""
+            // setTaskData({ starttime: "", Endtime: "", task: "" })
             // setTaskData({})
+        } else {
+            alert("All field should be filled")
         }
     }
 
@@ -51,21 +64,15 @@ const TimerTodo = () => {
                 return task;
             })
         );
-        // setEditId(null);
+        setEditId(null);
     }
+    // console.log(listData)
     const DeleteData = (id) => {
         setListData((prev) => prev.filter((items) => (items.id !== id)))
     }
 
-    let validate = (listData) => {
-        if (listData.starttime == "" || listData.Endtime == "" || listData.task === "") {
-            alert("all field should be filled")
-            return false
-        }
-        return true
-    }
 
-    // console.log(listData)
+    console.log(listData)
     // console.log(taskData)
 
     return (
@@ -73,7 +80,7 @@ const TimerTodo = () => {
             <div className="header">
                 <span>
                     <label>Select Date: </label>
-                    <input type="date" defaultValue={defaultDate} onChange={(e) => { setCurrDate(new Date(e.target.value)) }} />
+                    <input type="date" defaultValue={defaultDate}/>
                 </span>
                 <span>
                     <button>Load</button>
@@ -98,7 +105,7 @@ const TimerTodo = () => {
                     <button onClick={() => { Addlist() }} style={{ width: "70%" }}>Add</button>
                 </span>
             </div>
-
+            {/* <div style={{width:"100%"}}> */}
             <table>
                 <tr>
                     <th>Start Time</th>
