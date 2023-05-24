@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react"
 import "./timerTodo.css"
 const TimerTodo = () => {
-    const [taskData, setTaskData] = useState({ starttime: "", Endtime: "", minutes: "", task: "", id: "" })
+    const [min, setMin] = useState("")
+
+    const [taskData, setTaskData] = useState({ starttime: "", Endtime: "", minutes: "", task: "", id: Date.now() * Math.random(10) })
     const [startTime, setStartTime] = useState("")
     const [EndTime, setEndTime] = useState("")
-    const [min, setMin] = useState("")
-    const [Task, setTask] = useState("")
+    // const [Task, setTask] = useState("")
     const [listData, setListData] = useState([])
-    const [edit, setEdit] = useState(null)
-    const [updateTask, setupdate] = useState({ starttime: "", Endtime: "", task: "" })
+    const [editId, setEditId] = useState(null);
+
+    // const [edit, setEdit] = useState(null)
+    // const [updateTask, setupdate] = useState({ starttime: "", Endtime: "", task: "" })
 
     // const [endtimeStr, endperiod] = EndTime.split(" ");
     // const [endhoursStr, endminutesStr] = EndTime.split(":");
@@ -23,7 +26,7 @@ const TimerTodo = () => {
     // const endpaddedMinutes = endminutesStr.padStart(2, "0");
 
     useEffect(() => {
-        const [starttimeStr, startperiod] = startTime.split(" ");
+        const [starttimeStr, startperiod] = taskData.starttime.split(" ");
         const [starthoursStr, startminutesStr] = starttimeStr.split(":");
         let starthours = parseInt(starthoursStr);
         let startmins = parseInt(startminutesStr);
@@ -34,7 +37,7 @@ const TimerTodo = () => {
         }
         startmins = starthours * 60 + startmins
 
-        const [endtimeStr, endperiod] = EndTime.split(" ");
+        const [endtimeStr, endperiod] = taskData.Endtime.split(" ");
         const [endhoursStr, endminutesStr] = endtimeStr.split(":");
         let endhours = parseInt(endhoursStr);
         let endmins = parseInt(endminutesStr);
@@ -47,78 +50,44 @@ const TimerTodo = () => {
         // if (endmins > startmins) {
         let diff = endmins - startmins
         // }
-        setMin(diff.toString())
-    }, [startTime, EndTime, setMin])
+        setTaskData({ ...taskData, minutes: diff })
+        // setMin(diff.toString())
+    }, [taskData, setTaskData])
 
 
-    // const updateTask = (id, updatedTask) => {
-    //     setTask((prev) => (
-    //         prev.map((task, i) => (i === id ? updatedTask : task))))
-    // }
 
 
-    // const paddedHours = hours.toString().padStart(2, "0");
-    // const paddedMinutes =startminutesStr.padStart(2, "0");
-    // const Starttime24hr = `${paddedHours}:${paddedMinutes}`;
-
-
-    useEffect(() => {
-        // setId((id)=>(id+1))
-        setTaskData({ starttime: startTime, Endtime: EndTime, minutes: min, task: Task, id: Date.now() * Math.random(10) })
-    }, [startTime, EndTime, Task])
+    // useEffect(() => {
+    //     // setId((id)=>(id+1))
+    //     setTaskData({ starttime: startTime, Endtime: EndTime, minutes: min, task: Task, id: Date.now() * Math.random(10) })
+    // }, [startTime, EndTime, Task])
 
     const Addlist = () => {
 
         if (taskData.task.trim() !== "") {
             setListData((prev) => [...prev, taskData])
-            setTaskData({})
+            // setTaskData({})
         }
-
-        // if (!edit) {
-        //     if (min > 0) {
-        //         setListData([...listData, taskData])
-        //         setTask("")
-        //     } else {
-        //         alert("End Time should be greater thsn start time")
-        //     }
-        // } else {
-        //     handleupdate(Task, edit.id)
-        //     setTask("")
-        // }
     }
 
     const handleEdit = (id, Task) => {
-        setListData((prev) => (
-            prev.map((task, i) => (i === id ? Task : task))))
-
+        setListData((prev) =>
+            prev.map((task) => {
+                if (task.id === id) {
+                    return { ...task, task: Task };
+                }
+                return task;
+            })
+        );
+        setEditId(null);
     }
-
-    // const handleupdate = (task, id) => {
-        // const newData = listData.map((items, i) => (
-        //     items.id === id ? (task, id) : items
-        // ))
-        // setListData(newData)
-        // setEdit("")
-    //     setTask((prev) => (
-    //         prev.map((task, i) => (i === prev.id ? task.task : task))))
-
-
-    // }
-
-    // useEffect(() => {
-    //     if (edit) {
-    //         setTask(edit.Task)
-    //     } else {
-    //         setTask("")
-    //     }
-    // }, [setTask, edit])
-
+    // console.log(listData)
     const DeleteData = (id) => {
         setListData((prev) => prev.filter((items) => (items.id !== id)))
     }
 
 
-    console.log(listData)
+    // console.log(listData)
     console.log(taskData)
 
     return (
@@ -138,14 +107,14 @@ const TimerTodo = () => {
             <div className="nav">
                 <span>
                     <label className="start-label" htmlFor="start-time">Start Time:- </label>
-                    <input type="time" placeholder="Start time" id="start-time" value={startTime} onChange={(e) => { setStartTime(e.target.value) }} required />
+                    <input type="time" placeholder="Start time" id="start-time" value={taskData.starttime} onChange={(e) => { setTaskData({ ...taskData, starttime: e.target.value }) }} required />
                 </span>
                 <span >
                     <label className="end-label">End Time:- </label>
-                    <input type="time" min="09:00" max="18:00" value={EndTime} onChange={(e) => { setEndTime(e.target.value) }} />
+                    <input type="time" min="09:00" max="18:00" value={taskData.Endtime} onChange={(e) => { setTaskData({ ...taskData, Endtime: e.target.value }) }} />
                 </span>
                 <span style={{ width: "20%" }}>
-                    <input type="text" placeholder="Add task" className="task-input" onChange={(e) => { setTask(e.target.value) }} style={{ width: "100%", marginRight: "14px" }} />
+                    <input type="text" placeholder="Add task" className="task-input" onChange={(e) => { setTaskData({ ...taskData, task: e.target.value }) }} style={{ width: "100%", marginRight: "14px" }} />
                 </span>
                 <span>
                     <button onClick={() => { Addlist() }} style={{ width: "70%" }}>Add</button>
@@ -168,12 +137,6 @@ const TimerTodo = () => {
                             <td>{items.minutes}</td>
                             <td>{items.task}</td>
                             <td>
-                                {/* {edit === items.id ? (
-                                    <button onClick={() => { handleupdate(items.task, items.id) }}>save</button>)
-                                    :
-                                    (<button onClick={() => { handleEdit(items.id) }}>Edit</button>)
-
-                                } */}
                                 <button onClick={() => { handleEdit(items.id, prompt('Enter updated task:', items.task)) }}>Edit</button>
 
                                 <button onClick={() => DeleteData(items.id)}>Delete</button>
