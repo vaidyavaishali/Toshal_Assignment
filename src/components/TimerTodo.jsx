@@ -2,8 +2,11 @@ import { useEffect, useState } from "react"
 import "./timerTodo.css"
 const TimerTodo = () => {
     const [taskData, setTaskData] = useState({ starttime: "", Endtime: "", minutes: "", task: "", id: Date.now() * Math.random(10) })
+    const [currDate, setCurrDate] = useState("")
     const [listData, setListData] = useState([])
-    const [editId, setEditId] = useState(null);
+
+    const currentDate = new Date();
+    const defaultDate = currentDate.toISOString().split("T")[0];
 
     useEffect(() => {
         const [starttimeStr, startperiod] = taskData.starttime.split(" ");
@@ -48,9 +51,8 @@ const TimerTodo = () => {
                 return task;
             })
         );
-        setEditId(null);
+        // setEditId(null);
     }
-    // console.log(listData)
     const DeleteData = (id) => {
         setListData((prev) => prev.filter((items) => (items.id !== id)))
     }
@@ -71,7 +73,7 @@ const TimerTodo = () => {
             <div className="header">
                 <span>
                     <label>Select Date: </label>
-                    <input type="date" />
+                    <input type="date" defaultValue={defaultDate} onChange={(e) => { setCurrDate(new Date(e.target.value)) }} />
                 </span>
                 <span>
                     <button>Load</button>
