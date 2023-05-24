@@ -1,29 +1,9 @@
 import { useEffect, useState } from "react"
 import "./timerTodo.css"
 const TimerTodo = () => {
-    const [min, setMin] = useState("")
-
     const [taskData, setTaskData] = useState({ starttime: "", Endtime: "", minutes: "", task: "", id: Date.now() * Math.random(10) })
-    const [startTime, setStartTime] = useState("")
-    const [EndTime, setEndTime] = useState("")
-    // const [Task, setTask] = useState("")
     const [listData, setListData] = useState([])
     const [editId, setEditId] = useState(null);
-
-    // const [edit, setEdit] = useState(null)
-    // const [updateTask, setupdate] = useState({ starttime: "", Endtime: "", task: "" })
-
-    // const [endtimeStr, endperiod] = EndTime.split(" ");
-    // const [endhoursStr, endminutesStr] = EndTime.split(":");
-
-    // let Endhours = parseInt(endhoursStr);
-    // if (endperiod === "PM" && Endhours < 12) {
-    //     hours += 12;
-    // } else if (endperiod === "AM" && Endhours === 12) {
-    //     hours = 0;
-    // }
-    // const endpaddedHours = hours.toString().padStart(2, "0");
-    // const endpaddedMinutes = endminutesStr.padStart(2, "0");
 
     useEffect(() => {
         const [starttimeStr, startperiod] = taskData.starttime.split(" ");
@@ -47,20 +27,10 @@ const TimerTodo = () => {
             endhours = 0;
         }
         endmins = endhours * 60 + endmins
-        // if (endmins > startmins) {
         let diff = endmins - startmins
-        // }
+
         setTaskData({ ...taskData, minutes: diff })
-        // setMin(diff.toString())
     }, [taskData, setTaskData])
-
-
-
-
-    // useEffect(() => {
-    //     // setId((id)=>(id+1))
-    //     setTaskData({ starttime: startTime, Endtime: EndTime, minutes: min, task: Task, id: Date.now() * Math.random(10) })
-    // }, [startTime, EndTime, Task])
 
     const Addlist = () => {
 
@@ -120,7 +90,7 @@ const TimerTodo = () => {
                     <button onClick={() => { Addlist() }} style={{ width: "70%" }}>Add</button>
                 </span>
             </div>
-            {/* <div style={{width:"100%"}}> */}
+
             <table>
                 <tr>
                     <th>Start Time</th>
