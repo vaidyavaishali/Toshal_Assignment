@@ -33,8 +33,7 @@ const TimerTodo = () => {
     }, [taskData, setTaskData])
 
     const Addlist = () => {
-
-        if (taskData.task.trim() !== "") {
+        if (validate(taskData) === true) {
             setListData((prev) => [...prev, taskData])
             // setTaskData({})
         }
@@ -56,9 +55,16 @@ const TimerTodo = () => {
         setListData((prev) => prev.filter((items) => (items.id !== id)))
     }
 
+    let validate = (listData) => {
+        if (listData.starttime == "" || listData.Endtime == "" || listData.task === "") {
+            alert("all field should be filled")
+            return false
+        }
+        return true
+    }
 
     // console.log(listData)
-    console.log(taskData)
+    // console.log(taskData)
 
     return (
         <div className="main-div">
